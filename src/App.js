@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Home from './page/Home';
+import Questionary from './page/Questionary';
+import Auth from './page/Auth';
+import Charts from './page/charts';
+import { BrowserRouter as Router} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import 'font-awesome/css/font-awesome.min.css';
+
 
 function App() {
+ 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <section>                              
+            <Routes>                                                                        
+                <Route path="/" element={<Home/>}/>
+                <Route path="/auth" element={<Auth/>}/>
+                <Route path="/charts" element={<Charts/>}/>
+                <Route path="/questionary" element={<Questionary/>}></Route>
+            </Routes>                    
+        </section>
+      </div>
+    </Router>
   );
 }
-
+ 
 export default App;
