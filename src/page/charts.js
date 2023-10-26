@@ -32,14 +32,6 @@ const Charts = () => {
         });
     }
       
-
-    const data = [
-        { name: 'January', value: 12 },
-        { name: 'February', value: 19 },
-        { name: 'March', value: 3 },
-        { name: 'April', value: 5 },
-        { name: 'May', value: 2 },
-      ];
       
     return (
         <div classname="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
@@ -61,7 +53,6 @@ const Charts = () => {
             </div>
             <FileUploadForm />
             <ReadDataFromDatabase />
-            <ChartComponent data={data}/>
         </div>
     );
 }

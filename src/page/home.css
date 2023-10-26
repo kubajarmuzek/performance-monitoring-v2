@@ -9,6 +9,12 @@
     padding: 10px; /* Add padding as needed */
 }
 
+.chart--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* Adjust the column width as needed */
+    gap: 20px; /* Adjust the gap between charts as needed */
+  }
+
 .charts--table {
     font-size: small;
     padding: 5px;
