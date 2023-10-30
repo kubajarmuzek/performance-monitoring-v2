@@ -7,7 +7,8 @@ import FileUploadForm from './FileUploadForm';
 import './home.css';
 import ReadDataFromDatabase from './ReadFromDatabase';
 
-const Charts = () => {
+function Corelation() {
+    
     const navigate = useNavigate();
     const [showSidebar, setShowSidebar] = useState(false);
     const hoverStyles = {
@@ -42,16 +43,10 @@ const Charts = () => {
                 </div>
             </div>
             {showSidebar && <Sidebar handleClick={handleClick} className="menu--sideNav" />}
+            <h1> Choose the metrics you want to see the corelation of</h1>
             
-            <div >
-                <h1>
-                    Charts <br></br>
-                    Upload a file
-                </h1>
-            </div>
-            <FileUploadForm />
-            <ReadDataFromDatabase />
         </div>
     );
 }
-export default Charts;
+
+export default Corelation;

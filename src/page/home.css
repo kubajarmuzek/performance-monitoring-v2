@@ -10,8 +10,9 @@
 }
 
 .chart--grid {
+    margin: 50px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* Adjust the column width as needed */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the column width as needed */
     gap: 20px; /* Adjust the gap between charts as needed */
   }
 
@@ -31,6 +32,11 @@
     align-items: start;
     justify-content: left;
     font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+
+.sidebar li a {
+    text-decoration: none;
+    color: rgb(94, 42, 94);
 }
 
 .sidebar{
@@ -63,4 +69,8 @@
 .home--logout button {
     height: 40px;
     width: 100px;
+    background-color: rgb(94, 42, 94);
+    color: white;
+    border-radius: 10px;
+    box-shadow: #111;
 }

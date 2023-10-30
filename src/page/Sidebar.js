@@ -9,6 +9,7 @@ const Sidebar = (props) => {
             <li className='sidebar--element' onClick={props.handleClick}><NavLink to="/">Home</NavLink></li>
             <li className='sidebar--element' onClick={props.handleClick}><NavLink to="/charts">Performance charts</NavLink></li>
             <li className='sidebar--element' onClick={props.handleClick}><NavLink to="/questionary">Readiness</NavLink></li>
+            <li className='sidebar--element' onClick={props.handleClick}><NavLink to="/corelation">Corelation</NavLink></li>
         </ul>
     );
 }
