@@ -3,15 +3,14 @@ import { signOut } from "firebase/auth";
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import FileUploadForm from './FileUploadForm';
-import './home.css';
-import ReadDataFromDatabase from './ReadFromDatabase';
+import './home/home.css';
 
-const Charts = () => {
+const Questionary = () => {
     const navigate = useNavigate();
     const [showSidebar, setShowSidebar] = useState(false);
     const hoverStyles = {
         marginLeft: '300px',
+        //backgroundColor: "rgba(0,0,0,0.4)",
     };
     const defaultStyle = {
         marginLeft: 0,
@@ -22,15 +21,15 @@ const Charts = () => {
 
     const handleLogout = () => {
         signOut(auth).then(() => {
+            // Sign-out successful.
             navigate("/auth");
             console.log("Signed out successfully")
         }).catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
+            // An error happened.
         });
     }
-      
+
+
     return (
         <div classname="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
             <div className='home--top'>
@@ -42,16 +41,12 @@ const Charts = () => {
                 </div>
             </div>
             {showSidebar && <Sidebar handleClick={handleClick} className="menu--sideNav" />}
-            
             <div >
                 <h1>
-                    Charts <br></br>
-                    Upload a file
+                    Readiness Questionary
                 </h1>
             </div>
-            <FileUploadForm />
-            <ReadDataFromDatabase />
         </div>
     );
 }
-export default Charts;
+export default Questionary;

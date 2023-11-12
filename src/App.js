@@ -1,9 +1,9 @@
 import React from 'react';
-import Home from './page/Home';
-import Questionary from './page/Questionary';
-import Corelation from './page/Corelation';
-import Auth from './page/Auth';
-import Charts from './page/charts';
+import Home from './components/home/Home';
+import Questionary from './components/Questionary';
+import Corelation from './components/Corelation';
+import Auth from './components/auth/Auth';
+import Charts from './components/charts';
 import { BrowserRouter as Router} from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';

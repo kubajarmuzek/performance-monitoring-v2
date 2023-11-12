@@ -3,14 +3,15 @@ import { signOut } from "firebase/auth";
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
-import './home.css';
+import FileUploadForm from './FileUploadForm';
+import './home/home.css';
+import ReadDataFromDatabase from './ReadFromDatabase';
 
-const Home = () => {
+const Charts = () => {
     const navigate = useNavigate();
     const [showSidebar, setShowSidebar] = useState(false);
     const hoverStyles = {
         marginLeft: '300px',
-        //backgroundColor: "rgba(0,0,0,0.4)",
     };
     const defaultStyle = {
         marginLeft: 0,
@@ -26,10 +27,10 @@ const Home = () => {
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode, errorMessage)
+            console.log(errorCode, errorMessage);
         });
     }
-
+      
     return (
         <div classname="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
             <div className='home--top'>
@@ -43,12 +44,14 @@ const Home = () => {
             {showSidebar && <Sidebar handleClick={handleClick} className="menu--sideNav" />}
             
             <div >
-                <p>
-                    Welcome Home
-                </p>
+                <h1>
+                    Charts <br></br>
+                    Upload a file
+                </h1>
             </div>
+            <FileUploadForm />
+            <ReadDataFromDatabase />
         </div>
     );
 }
-
-export default Home;
+export default Charts;
