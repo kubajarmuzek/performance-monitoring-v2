@@ -19,8 +19,12 @@
 }
 
 .login--left {
+    padding: 40px;
     flex: 1;
-    padding: 40px;    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;  
 }
 
 .login--right {
@@ -101,9 +105,18 @@
 
 .login--message {
     font-size: 0.8rem;
-
 }
 
 .login--input--wrong {
     background-color: #e98275;
 }
+
+.login--invisible {
+    display: none;
+}
+
+.login--info {
+    text-align: center;
+}
+
+

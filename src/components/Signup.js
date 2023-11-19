@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
-const Signup = () => {
+const Signup = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isEmailValid, setIsEmailValid] = useState(true);
@@ -48,7 +48,22 @@ const Signup = () => {
 
     return (
         <main className='login--right'>
-            <section>
+            <div className={(props.activeMode==="signup")?"login--invisible":"login--info"}>
+                <h1>
+                    Welcome Back!
+                </h1>
+                <p>
+                    Enter your personal details to use all of site features
+                </p>
+                <p>
+                    OR
+                </p>
+                <button onClick={()=>{props.setActiveMode("signup")}}>
+                    Signup
+                </button>
+                
+            </div>
+            <section className={(props.activeMode==="login")?"login--invisible":""}>
                 <div>
                     <form>
                         <div>

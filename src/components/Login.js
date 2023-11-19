@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom'
 import "./auth/auth.css"
 
-const Login = () => {
+const Login = (props) => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -54,7 +54,21 @@ const Login = () => {
 
     return (
         <main className='login--left'>
-            <section>
+            <div className={(props.activeMode==="login")?"login--invisible":"login--info"}>
+            <h1>
+                    Welcome Back!
+                </h1>
+                <p>
+                    Enter your personal details to use all of site features
+                </p>
+                <p>
+                    OR
+                </p>
+                <button onClick={()=>{props.setActiveMode("login")}}>
+                    Sign in
+                </button>
+            </div>
+            <section className={(props.activeMode==="signup")?"login--invisible":""}>
                 <div>
                     <form>
                         <div>
@@ -68,7 +82,7 @@ const Login = () => {
                                 placeholder="Email address"
                                 onChange={(e) => {
                                     setEmail(e.target.value);
-                                    setIsEmailValid(true); 
+                                    setIsEmailValid(true);
                                 }}
                             />
                             {!isEmailValid && <p className='login--message'>Please enter a valid email</p>}
@@ -96,8 +110,6 @@ const Login = () => {
                             Sign in
                         </button>
                     </form>
-
-
                 </div>
             </section>
         </main>
