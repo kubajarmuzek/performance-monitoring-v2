@@ -1,0 +1,158 @@
+*, *::before,*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+}
+
+.chart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    max-width: 90vw; /* Set the maximum width of the container to 90% of the viewport width */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+#myChart {
+    height: 1000px;
+    width: 100px;
+}
+
+
+button:focus {
+    background-color: #111;
+    color: white;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.canvas-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 60px;
+    transition: 0.5s;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+#question {
+    color: black;
+}
+
+.main {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    width: 95vw;
+    justify-content: center;
+}
+
+.btn.selected {
+    background-color:white;
+    color: grey;
+}
+
+.container {
+    background-color: rgb(117, 79, 117);
+    width: 800px;
+    max-width: 80%;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px 2px;
+}
+
+.btn-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.btn {
+    border: 1px solid hsl(200, 100%, 30%);
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: black;
+    outline: none;
+}
+
+.btn:hover {
+    border-color: grey;
+}
+
+
+.submit {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#selection {
+    display: grid;
+    grid-template-columns: repeat(3,auto);
+}
+
+#logout-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}

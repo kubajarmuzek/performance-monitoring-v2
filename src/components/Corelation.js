@@ -53,35 +53,7 @@ function Corelation() {
                 </div>
             </div>
             {showSidebar && <Sidebar handleClick={handleClick} className="menu--sideNav" />}
-            <h1>Choose the metrics you want to see the correlation of</h1>
-            <div>
-                <h2>Select Metric 1:</h2>
-                <div>
-                    <button onClick={() => handleMetric1Select('')}>Clear</button>
-                </div>
-                <ul>
-                    {options.map((option, index) => (
-                        <li key={index} onClick={() => handleMetric1Select(option)}>
-                            {option}
-                        </li>
-                    ))}
-                </ul>
-                <p>Selected Metric 1: {selectedMetric1}</p>
-            </div>
-            <div>
-                <h2>Select Metric 2:</h2>
-                <div>
-                    <button onClick={() => handleMetric2Select('')}>Clear</button>
-                </div>
-                <ul>
-                    {options.map((option, index) => (
-                        <li key={index} onClick={() => handleMetric2Select(option)}>
-                            {option}
-                        </li>
-                    ))}
-                </ul>
-                <p>Selected Metric 2: {selectedMetric2}</p>
-            </div>
+            
         </div>
     );
 }
