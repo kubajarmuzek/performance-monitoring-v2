@@ -6,9 +6,9 @@ const Auth = () => {
     return (
         <div className="login--body">
             <div className="login--box">
-                <Login className="login--left" />
+                <Login className="login--left"/>
                 <div className="or">OR</div>
-                <Signup className="login--right" />
+                <Signup className="login--right"/>
             </div>
         </div>
     );

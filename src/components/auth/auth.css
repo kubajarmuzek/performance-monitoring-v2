@@ -1,5 +1,5 @@
 .login--body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
@@ -97,4 +97,13 @@
 
 .fa {
     margin-right: 8px;
+}
+
+.login--message {
+    font-size: 0.8rem;
+
+}
+
+.login--input--wrong {
+    background-color: #e98275;
 }

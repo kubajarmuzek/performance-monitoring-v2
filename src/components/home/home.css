@@ -12,7 +12,7 @@
 .chart--grid {
     margin: 50px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust the column width as needed */
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); /* Adjust the column width as needed */
     gap: 20px; /* Adjust the gap between charts as needed */
   }
 
@@ -74,3 +74,31 @@
     border-radius: 10px;
     box-shadow: #111;
 }
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  
+  .left-column, .middle-column, .right-column {
+    width: 33.33%;
+    float: left;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+  .left-column img,
+  .right-column img {
+    height: 100%; /* Set a specific height for images (adjust as needed) */
+    object-fit: contain; /* Maintain aspect ratio without cutting content */
+  }
