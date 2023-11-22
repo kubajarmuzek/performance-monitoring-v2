@@ -3,48 +3,56 @@ import { ref, get } from 'firebase/database';
 import { getCurrentUserUID, database } from '../firebase';
 import ChartComponent from './ChartComponent'; // Import your ChartComponent here
 
-function ReadDataFromFirebase() {
+function ReadDataFromDatabase() {
   const [data, setData] = useState([]);
   const [paramNames, setParamNames] = useState([]);
   const [error, setError] = useState(null);
+  const userUID = getCurrentUserUID();
 
   useEffect(() => {
-    const userUID = getCurrentUserUID();
+    const fetchData = async () => {
+      try {
+        if (userUID) {
+          const databaseRef = ref(database, `users/${userUID}`);
 
-    if (userUID) {
-      const databaseRef = ref(database, `users/${userUID}`);
+          const snapshot = await get(databaseRef);
 
-      get(databaseRef)
-        .then((snapshot) => {
           if (snapshot.exists()) {
             const dataObject = snapshot.val();
             const dataAsArray = Object.values(dataObject);
 
-            // Extract parameter names from the first item (assuming all items have the same structure)
-            const firstItem = dataAsArray[0];
-            if (firstItem) {
-              const names = Object.keys(firstItem);
-              setParamNames(names);
-            }
+            // Organize data into separate arrays based on metric names
+            const metricArrays = {};
 
-            // Convert the data into a 2D table format (array of arrays)
-            const dataInTableFormat = dataAsArray.map((item) => {
-              return Object.values(item);
+            dataAsArray.forEach((item) => {
+              const metricName = item.label;
+
+              if (!metricArrays[metricName]) {
+                metricArrays[metricName] = [];
+              }
+
+              metricArrays[metricName].push({
+                ...item,
+                day: item.date,
+              });
             });
 
-            setData(dataInTableFormat);
-            setError(null);
+            // Set the organized data and param names to state
+            setData(metricArrays);
+            setParamNames(Object.keys(metricArrays));
           } else {
             setError("No data found in the database for the current user.");
           }
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    } else {
-      setError("User not authenticated");
-    }
-  }, []);
+        } else {
+          setError("User not authenticated");
+        }
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchData();
+  }, [userUID]);
 
   // Helper function to strip units from values
   const stripUnits = (value) => {
@@ -65,18 +73,20 @@ function ReadDataFromFirebase() {
           <h3>Charts</h3>
           <div className='chart--grid'>
             {paramNames
-              .filter((name) => name !== "Additional Load _kg_" && name !== "BW _KG" && name !== "ExternalId" &&
-                name !== "Name" && name !== "Time" && name !== "Test Type" && name !== "Tags") // Exclude specified parameters
-              .filter((paramName) => paramName !== 'Date') // Exclude 'Date' parameter
+              .filter(
+                (paramName) =>
+                  !isNaN(parseFloat(stripUnits(data[paramName][0][paramName]))) && // Exclude metrics with string values
+                  !data[paramName].every((item) => parseFloat(stripUnits(item[paramName])) === 0) // Exclude metrics with only zeros as values
+              )
               .map((paramName, index) => (
                 <div key={index}>
                   <h4>{paramName}</h4>
                   <ChartComponent
-                    data={data.map((item) => ({
-                      name: item[paramNames.indexOf('Date')],
-                      value: parseFloat(stripUnits(item[paramNames.indexOf(paramName)])), // Remove units and parse as a float
+                    data={data[paramName].map((item) => ({
+                      name: item.day,
+                      value: parseFloat(stripUnits(item[paramName])),
                     }))
-                      .filter((item) => item.value !== 0)} // Exclude data with value 0
+                      .filter((item) => item.value !== 0)} // Filter out 0 values
                   />
                 </div>
               ))}
@@ -87,4 +97,4 @@ function ReadDataFromFirebase() {
   );
 }
 
-export default ReadDataFromFirebase;
+export default ReadDataFromDatabase;

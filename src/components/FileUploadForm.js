@@ -6,37 +6,50 @@ import { ref, get, push, set, child } from 'firebase/database';
 function FileUploadForm() {
   const [csvData, setCSVData] = useState([]);
   const [error, setError] = useState(null);
+  const userUID=getCurrentUserUID();
+  var databaseRef = ref(database, `users/${userUID}`);
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-
+    
     if (file) {
+      databaseRef = ref(database, `users/${userUID}`);
       Papa.parse(file, {
         complete: (result) => {
           const data = result.data;
 
-          const userUID = getCurrentUserUID();
           if (userUID) {
             const labels = data[0].map(label => label.replace(/[.#$/[\]]/g, "_"));
 
             data.slice(1).forEach((row) => {
-              const rowData = {};
+              var rowData = {};
+              var date;
               let customNodeName = ""; // Initialize the custom node name
-            
+
               row.forEach((value, index) => {
-                const label = labels[index];
-                rowData[label] = value;
-            
+                var label = labels[index];
                 // Check if the label is "Date" and use it to generate a custom node name
                 if (label === "Date") {
-                  customNodeName += value; 
+                  customNodeName += value;
+                  date=value;
                 }
                 if (label === "Time") {
-                  customNodeName += value; 
+                  customNodeName += value;
                 }
               });
-            
-              const databaseRef = ref(database, `users/${userUID}`);
+
+              row.forEach((value,index)=> {
+                var rowData={}
+                var label = labels[index];
+                rowData[label] = value;
+                rowData["date"] = date;
+                rowData["label"] = label;
+                console.log(label, rowData)
+                checkAndUpdateData(databaseRef, (customNodeName+label).replace(/[.#$/[\]]/g, "_"), rowData);
+
+              });
+
               checkAndUpdateData(databaseRef, customNodeName.replace(/[.#$/[\]]/g, "_"), rowData);
             });
 
@@ -65,19 +78,19 @@ function FileUploadForm() {
           set(dataRef, rowData);
         } else {
           // Data doesn't exist, create a new record
-          push(dataRef, rowData);
+          set(dataRef, rowData);
         }
       })
       .catch((error) => {
-        setError(error.message);
+        // Handle error
       });
   };
-
+  
   return (
     <div>
       <h2>CSV File Reader</h2>
       <input type="file" onChange={handleFileChange} />
-    
+
       {error && <p>Error: {error}</p>}
       {csvData.length > 0 && (
         <table className='charts--table'>

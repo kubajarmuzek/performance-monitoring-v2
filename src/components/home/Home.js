@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { signOut } from "firebase/auth";
 import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUserUID } from '../../firebase';
+
 import Sidebar from '../Sidebar';
 import './home.css';
 
 const Home = () => {
     const navigate = useNavigate();
+
+    if(!getCurrentUserUID) {
+        navigate("/auth");
+    }
     const [showSidebar, setShowSidebar] = useState(false);
     const hoverStyles = {
         marginLeft: '300px',
@@ -31,9 +37,9 @@ const Home = () => {
     }
 
     return (
-        <div classname="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
+        <div className="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
             <div className='home--top'>
-                <span className="menu--bars" onClick={handleClick}><i class="fa-solid fa-bars fa"></i></span>
+                <span className="menu--bars" onClick={handleClick}><i className="fa-solid fa-bars fa"></i></span>
                 <div className='home--logout'>
                     <button onClick={handleLogout}>
                         Logout

@@ -32,9 +32,9 @@ const Charts = () => {
     }
       
     return (
-        <div classname="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
+        <div className="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
             <div className='home--top'>
-                <span className="menu--bars" onClick={handleClick}><i class="fa-solid fa-bars fa"></i></span>
+                <span className="menu--bars" onClick={handleClick}><i className="fa-solid fa-bars fa"></i></span>
                 <div className='home--logout'>
                     <button onClick={handleLogout}>
                         Logout
