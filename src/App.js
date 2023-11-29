@@ -12,7 +12,7 @@ import 'font-awesome/css/font-awesome.min.css';
 function App() {
  
   return (
-    <Router>
+    <Router basename='https://yourusername.github.io/your-repo'>
       <div>
         <section>                              
             <Routes>                                                                        
