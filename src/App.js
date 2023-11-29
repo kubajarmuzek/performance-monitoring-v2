@@ -12,7 +12,7 @@ import 'font-awesome/css/font-awesome.min.css';
 function App() {
  
   return (
-    <Router basename='https://yourusername.github.io/your-repo'>
+    <Router basename='https://kubajarmuzek.github.io/performance-monitoring-v2'>
       <div>
         <section>                              
             <Routes>                                                                        
