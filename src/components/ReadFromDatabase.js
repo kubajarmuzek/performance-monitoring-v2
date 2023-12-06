@@ -36,7 +36,6 @@ function ReadDataFromDatabase() {
                 day: item.date,
               });
             });
-
             // Set the organized data and param names to state
             setData(metricArrays);
             setParamNames(Object.keys(metricArrays));
@@ -52,6 +51,8 @@ function ReadDataFromDatabase() {
     };
 
     fetchData();
+    console.log(data);
+
   }, [userUID]);
 
   // Helper function to strip units from values

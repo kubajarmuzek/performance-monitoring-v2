@@ -83,7 +83,7 @@ const Question = ({ questionId, question, answers, handleAnswerSelect, selectedA
             data-weight={answer.weight}
             onClick={() => handleAnswerSelect(questionId, (index + 1) / 5 * answer.weight, index + 1)}
           >
-            {answer.text}
+            <p>{answer.text}</p>
           </button>
         ))}
       </div>
