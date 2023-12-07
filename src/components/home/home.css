@@ -2,6 +2,10 @@
     box-sizing: border-box;
 }
 
+.home--body {
+    padding: 50px;   
+}
+
 .home--top {
     display: flex;
     justify-content: space-between;
@@ -103,4 +107,19 @@
     object-fit: contain; /* Maintain aspect ratio without cutting content */
   }
 
- 
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: rgb(94, 42, 94);
+    color: white;
+  }
