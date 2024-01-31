@@ -1,20 +1,27 @@
-*, *::before,*::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+
+.home--body {
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    padding: 50px;
 }
 
 .home--top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px; /* Add padding as needed */
+    padding: 10px;
 }
 
 .chart--grid {
     margin: 50px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); /* Adjust the column width as needed */
-    gap: 20px; /* Adjust the gap between charts as needed */
-  }
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 20px;
+}
 
 .charts--table {
     font-size: small;
@@ -39,7 +46,7 @@
     color: rgb(94, 42, 94);
 }
 
-.sidebar{
+.sidebar {
     margin: 0;
     color: white;
     height: 100%;
@@ -79,28 +86,79 @@
     max-width: 1200px;
     margin: 0 auto;
     overflow: hidden;
-  }
-  
-  .left-column, .middle-column, .right-column {
+}
+
+.left-column,
+.middle-column,
+.right-column {
     width: 33.33%;
     float: left;
     box-sizing: border-box;
     padding: 20px;
     display: flex;
     flex-direction: column;
-  }
-  
-  img {
+}
+
+img {
     max-width: 100%;
     height: auto;
     display: block;
     margin-bottom: 20px;
-  }
-  
-  .left-column img,
-  .right-column img {
-    height: 100%; /* Set a specific height for images (adjust as needed) */
-    object-fit: contain; /* Maintain aspect ratio without cutting content */
-  }
+}
 
- 
+.left-column img,
+.right-column img {
+    height: 100%;
+    object-fit: contain;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 1.8vmin;
+    text-align: center;
+}
+
+th {
+    background-color: rgb(94, 42, 94);
+    color: white;
+}
+
+.home--table {
+    padding: 0 20%;
+}
+
+@media (max-width: 768px) {
+    .home--top {
+        padding: 10px;
+    }
+
+    .sidebar {
+        padding-top: 20px;
+    }
+
+    .home--logout button {
+        width: 80px;
+    }
+
+    table {
+        font-size: 1.5vmin;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+
+    .charts--table--cell th {
+        margin: 1px;
+        padding: 1px;
+    }
+}
