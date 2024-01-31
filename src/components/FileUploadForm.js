@@ -24,7 +24,7 @@ function FileUploadForm() {
 
             data.slice(1).forEach((row) => {
               var rowData = {};
-              var date;
+              var date,time;
               let customNodeName = ""; // Initialize the custom node name
 
               row.forEach((value, index) => {
@@ -36,6 +36,7 @@ function FileUploadForm() {
                 }
                 if (label === "Time") {
                   customNodeName += value;
+                  time = value;
                 }
               });
 
@@ -45,6 +46,7 @@ function FileUploadForm() {
                 rowData[label] = value;
                 rowData["date"] = date;
                 rowData["label"] = label;
+                rowData["time"] = time; 
                 console.log(label, rowData)
                 checkAndUpdateData(databaseRef, (customNodeName+label).replace(/[.#$/[\]]/g, "_"), rowData);
 

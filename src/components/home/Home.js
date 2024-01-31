@@ -84,6 +84,7 @@ const Home = () => {
   }, [userUID]);
 
   
+
   if (!getCurrentUserUID()) {
     navigate("/auth");
   }
