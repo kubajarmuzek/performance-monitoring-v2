@@ -34,10 +34,6 @@ function FileUploadForm() {
                   customNodeName += value;
                   date=value;
                 }
-                if (label === "Time") {
-                  customNodeName += value;
-                  time = value;
-                }
               });
 
               row.forEach((value,index)=> {
@@ -46,7 +42,6 @@ function FileUploadForm() {
                 rowData[label] = value;
                 rowData["date"] = date;
                 rowData["label"] = label;
-                rowData["time"] = time; 
                 console.log(label, rowData)
                 checkAndUpdateData(databaseRef, (customNodeName+label).replace(/[.#$/[\]]/g, "_"), rowData);
 

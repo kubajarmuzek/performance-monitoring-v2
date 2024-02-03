@@ -155,31 +155,31 @@ const Questionary = () => {
 
   const calculateScore = () => {
     console.log(selectedAnswers)
-    const totalScore = Object.values(selectedAnswers).reduce((sum, weight) => sum + weight, 0)*10;
-    setTotalScore(totalScore); // Set the totalScore state
-
+    const totalScore = (Object.values(selectedAnswers).reduce((sum, weight) => sum + weight, 0) * 10).toFixed(2);
+    setTotalScore(totalScore); 
     console.log('Total Score:', totalScore);
-
 
     const userUID = getCurrentUserUID();
     if (userUID) {
-      const rowData = {};
-      const currentDate = new Date();
-      const customNodeName = currentDate.toISOString();; // Initialize the custom node name
+        const rowData = {};
+        const currentDate = new Date();
+        const customNodeName = currentDate.toLocaleDateString('en-GB')+"readiness"; // Format date to DD/MM/YYYY
 
-      rowData["label"] = "readiness";
-      rowData["date"] = currentDate.toDateString();
-      rowData["readiness"] = totalScore;
+        rowData["label"] = "readiness";
+        rowData["date"] = customNodeName;
+        rowData["readiness"] = totalScore;
 
-      const databaseRef = ref(database, `users/${userUID}`);
-      checkAndUpdateData(databaseRef, customNodeName.replace(/[.#$/[\]]/g, "_"), rowData);
+        const databaseRef = ref(database, `users/${userUID}`);
+        checkAndUpdateData(databaseRef, customNodeName.replace(/[.#$/[\]]/g, "_"), rowData);
     }
 
     setPopupVisible(true);
-  };
+};
+
+
 
   const closePopup = () => {
-    setPopupVisible(false); // Close the pop-up
+    setPopupVisible(false); 
   };
 
   return (
