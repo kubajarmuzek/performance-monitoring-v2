@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { signOut } from "firebase/auth";
 import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import { ref, get, remove } from 'firebase/database';
+import { ref, get, remove, update } from 'firebase/database';
 import { getCurrentUserUID, database } from '../../firebase';
 
 import Sidebar from '../Sidebar';
@@ -13,6 +13,8 @@ const Home = () => {
   const [data, setData] = useState([]);
   const [paramNames, setParamNames] = useState([]);
   const [error, setError] = useState(null);
+  const [editingData, setEditingData] = useState(null); 
+
   const userUID = getCurrentUserUID();
 
   const fetchData = async () => {
@@ -57,9 +59,9 @@ const Home = () => {
   const handleDelete = async (paramName, day) => {
     try {
       const formattedDay = day.replace(/\//g, '_');
-  
+
       const userRef = ref(database, `users/${getCurrentUserUID()}/${formattedDay}${paramName}`);
-      
+
       const snapshot = await get(userRef);
 
       if (snapshot.exists()) {
@@ -74,8 +76,24 @@ const Home = () => {
       console.error("Error deleting data:", error.message);
     }
   };
-  
-  
+
+  const handleSaveEdit = async () => {
+    try {
+      const { paramName, day, value } = editingData;
+      const formattedDay = day.replace(/\//g, '_');
+      const userRef = ref(database, `users/${getCurrentUserUID()}/${formattedDay}${paramName}`);
+      await update(userRef, { [paramName]: value }); 
+      setEditingData(null); 
+      await fetchData(); 
+    } catch (error) {
+      console.error("Error editing data:", error.message);
+    }
+  };
+
+  const handleEdit = (paramName, day) => {
+    const itemToEdit = data[paramName].find(item => item.day === day);
+    setEditingData({ paramName, day, value: itemToEdit[paramName] });
+  };
 
   useEffect(() => {
     fetchData();
@@ -83,7 +101,7 @@ const Home = () => {
 
   }, [userUID]);
 
-  
+
 
   if (!getCurrentUserUID()) {
     navigate("/auth");
@@ -137,6 +155,7 @@ const Home = () => {
                 <th>Metric</th>
                 <th>Day</th>
                 <th>Value</th>
+                <th>Edit</th>
                 <th>Delete</th>
               </tr>
             </thead>
@@ -147,6 +166,7 @@ const Home = () => {
                     <th>{paramName}</th>
                     <th>Day</th>
                     <th>Value</th>
+                    <th>Edit</th>
                     <th>Delete</th>
                   </tr>
                   {data[paramName].map((item) => (
@@ -154,6 +174,13 @@ const Home = () => {
                       <td>{item.label}</td>
                       <td>{item.day}</td>
                       <td>{item[paramName]}</td>
+                      <td>
+                        <button
+                          onClick={() => handleEdit(paramName, item.day)} 
+                        >
+                          Edit
+                        </button>
+                      </td>
                       <td>
                         <button
                           onClick={() => handleDelete(paramName, item.day)}
@@ -169,6 +196,19 @@ const Home = () => {
           </table>
         )}
       </div>
+      {editingData && (
+        <div className="edit-modal">
+          <h2>Edit Data</h2>
+          <p>Metric: {editingData.paramName}</p>
+          <p>Day: {editingData.day}</p>
+          <input
+            type="text"
+            value={editingData.value}
+            onChange={(e) => setEditingData({...editingData, value: e.target.value})}
+          />
+          <button onClick={handleSaveEdit}>Save</button>
+        </div>
+      )}
     </div>
   );
 }
