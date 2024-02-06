@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/performance-monitoring-v2/static/css/main.3a722d28.css",
-    "main.js": "/performance-monitoring-v2/static/js/main.a237eb5b.js",
+    "main.css": "/performance-monitoring-v2/static/css/main.7905f999.css",
+    "main.js": "/performance-monitoring-v2/static/js/main.c6c419e5.js",
     "static/js/787.0e57e612.chunk.js": "/performance-monitoring-v2/static/js/787.0e57e612.chunk.js",
     "static/media/fontawesome-webfont.svg?v=4.7.0": "/performance-monitoring-v2/static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
     "static/media/fontawesome-webfont.eot": "/performance-monitoring-v2/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
@@ -9,12 +9,12 @@
     "static/media/fontawesome-webfont.woff?v=4.7.0": "/performance-monitoring-v2/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
     "static/media/fontawesome-webfont.woff2?v=4.7.0": "/performance-monitoring-v2/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
     "index.html": "/performance-monitoring-v2/index.html",
-    "main.3a722d28.css.map": "/performance-monitoring-v2/static/css/main.3a722d28.css.map",
-    "main.a237eb5b.js.map": "/performance-monitoring-v2/static/js/main.a237eb5b.js.map",
+    "main.7905f999.css.map": "/performance-monitoring-v2/static/css/main.7905f999.css.map",
+    "main.c6c419e5.js.map": "/performance-monitoring-v2/static/js/main.c6c419e5.js.map",
     "787.0e57e612.chunk.js.map": "/performance-monitoring-v2/static/js/787.0e57e612.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3a722d28.css",
-    "static/js/main.a237eb5b.js"
+    "static/css/main.7905f999.css",
+    "static/js/main.c6c419e5.js"
   ]
 }
