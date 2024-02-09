@@ -1,0 +1,37 @@
+.input-field {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.input-field label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-field select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.right-column button {
+    padding: 10px 20px;
+    border: none;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.chart--corelation {
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+@media screen and (min-width: 768px) {
+    .input-field {
+        width: calc(50% - 10px);
+        margin-right: 20px;
+    }
+}

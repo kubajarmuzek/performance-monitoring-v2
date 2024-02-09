@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ref, get } from 'firebase/database';
 import { getCurrentUserUID, database } from '../firebase';
-import ChartComponent from './ChartComponent'; // Import your ChartComponent here
+import ChartComponent from './ChartComponent';
 
 function ReadDataFromDatabase() {
   const [data, setData] = useState([]);
