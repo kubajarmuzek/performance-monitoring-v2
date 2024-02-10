@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { signOut } from "firebase/auth";
 import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import { ref, get, remove, update } from 'firebase/database';
+import { ref, get, remove, update, set } from 'firebase/database';
 import { getCurrentUserUID, database } from '../../firebase';
 
 import Sidebar from '../Sidebar';
@@ -14,6 +14,7 @@ const Home = () => {
   const [paramNames, setParamNames] = useState([]);
   const [error, setError] = useState(null);
   const [editingData, setEditingData] = useState(null); 
+  const [newRowData, setNewRowData] = useState({ metric: '', day: '', value: '' });
 
   const userUID = getCurrentUserUID();
 
@@ -95,6 +96,27 @@ const Home = () => {
     setEditingData({ paramName, day, value: itemToEdit[paramName] });
   };
 
+  const handleAddRow = async () => {
+    try {
+      const { metric, day, value } = newRowData;
+  
+      // Check if any of the required fields are empty
+      if (!metric || !day || !value) {
+        console.error("Error adding new row: All fields are required");
+        return;
+      }
+  
+      const formattedDay = day.replace(/\//g, '_');
+      const userRef = ref(database, `users/${getCurrentUserUID()}/${formattedDay}${metric}`);
+      await set(userRef, { [metric]: value, date: day, label: metric }); 
+      setNewRowData({ metric: '', day: '', value: '' }); 
+      await fetchData(); 
+    } catch (error) {
+      console.error("Error adding new row:", error.message);
+    }
+  };
+  
+
   useEffect(() => {
     fetchData();
     console.log(data);
@@ -160,6 +182,33 @@ const Home = () => {
               </tr>
             </thead>
             <tbody>
+              <tr key="new-row">
+                <td>
+                  <input
+                    type="text"
+                    value={newRowData.metric}
+                    onChange={(e) => setNewRowData({ ...newRowData, metric: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={newRowData.day}
+                    onChange={(e) => setNewRowData({ ...newRowData, day: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    value={newRowData.value}
+                    onChange={(e) => setNewRowData({ ...newRowData, value: e.target.value })}
+                  />
+                </td>
+                <td>
+                  <button onClick={handleAddRow}>Add Row</button>
+                </td>
+                <td></td>
+              </tr>
               {paramNames.sort().map((paramName) => (
                 <React.Fragment key={paramName}>
                   <tr>

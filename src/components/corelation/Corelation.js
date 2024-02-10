@@ -136,7 +136,7 @@ function Corelation() {
                 <div className="middle-column">
                     <div className="input-field">
                         <label>2nd value:</label>
-                        <select value={selectedMetricX} onChange={handleMetricXSelect}>
+                        <select value={selectedMetricY} onChange={handleMetricYSelect}>
                             <option value="">Select</option>
                             {metricsData
                                 .filter((metric, index, self) =>
