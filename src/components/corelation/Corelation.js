@@ -104,47 +104,49 @@ function Corelation() {
             const commonDates = findCommonDates(sortedData);
             const commonEntries = aggregateCommonData(sortedData, commonDates);
 
-            const numericCommonData = commonEntries.map(entry => ({
-                date: entry.date,
-                [selectedMetricX]: parseFloat(entry[selectedMetricX]),
-                [selectedMetricY]: parseFloat(entry[selectedMetricY]),
-            }));
+            if (commonDates.length>0) {
+                const numericCommonData = commonEntries.map(entry => ({
+                    date: entry.date,
+                    [selectedMetricX]: parseFloat(entry[selectedMetricX]),
+                    [selectedMetricY]: parseFloat(entry[selectedMetricY]),
+                }));
 
-            setCommonData(numericCommonData);
+                setCommonData(numericCommonData);
 
-            const xValues = numericCommonData.map(entry => entry[selectedMetricX]);
-            const yValues = numericCommonData.map(entry => entry[selectedMetricY]);
-            const corr = ss.sampleCorrelation(xValues, yValues);
-            setCorrelation(corr);
+                const xValues = numericCommonData.map(entry => entry[selectedMetricX]);
+                const yValues = numericCommonData.map(entry => entry[selectedMetricY]);
+                const corr = ss.sampleCorrelation(xValues, yValues);
+                setCorrelation(corr);
 
-            let correlationComment;
-            if (corr >= 0.7) {
-                correlationComment = "Strong positive correlation: Changes in " + selectedMetricX + " are likely to be associated with similar changes in " + selectedMetricY + ".";
-            } else if (corr >= 0.3 && corr < 0.7) {
-                correlationComment = "Moderate positive correlation: There is a tendency for " + selectedMetricX + " and " + selectedMetricY + " to increase together, but the relationship is not strong.";
-            } else if (corr >= -0.3 && corr < 0.3) {
-                correlationComment = "Weak or no correlation: There is little to no linear relationship between " + selectedMetricX + " and " + selectedMetricY + ".";
-            } else if (corr >= -0.7 && corr < -0.3) {
-                correlationComment = "Moderate negative correlation: As " + selectedMetricX + " increases, " + selectedMetricY + " tends to decrease, and vice versa, but the relationship is not strong.";
-            } else {
-                correlationComment = "Strong negative correlation: Changes in " + selectedMetricX + " are likely to be associated with opposite changes in " + selectedMetricY + ".";
+                let correlationComment;
+                if (corr >= 0.7) {
+                    correlationComment = "Strong positive correlation: Changes in " + selectedMetricX + " are likely to be associated with similar changes in " + selectedMetricY + ".";
+                } else if (corr >= 0.3 && corr < 0.7) {
+                    correlationComment = "Moderate positive correlation: There is a tendency for " + selectedMetricX + " and " + selectedMetricY + " to increase together, but the relationship is not strong.";
+                } else if (corr >= -0.3 && corr < 0.3) {
+                    correlationComment = "Weak or no correlation: There is little to no linear relationship between " + selectedMetricX + " and " + selectedMetricY + ".";
+                } else if (corr >= -0.7 && corr < -0.3) {
+                    correlationComment = "Moderate negative correlation: As " + selectedMetricX + " increases, " + selectedMetricY + " tends to decrease, and vice versa, but the relationship is not strong.";
+                } else {
+                    correlationComment = "Strong negative correlation: Changes in " + selectedMetricX + " are likely to be associated with opposite changes in " + selectedMetricY + ".";
+                }
+
+                setCorrelationComment(correlationComment);
+
+                const linearModel = ss.linearRegression(numericCommonData.map(entry => [entry[selectedMetricX], entry[selectedMetricY]]));
+                console.log(linearModel);
+                setLinearModel(linearModel);
+
+                const xLineValues = commonData.map(entry => entry[selectedMetricX]);
+                const updatedLinePoints = xLineValues.map(x => {
+                    const y = linearModel.m * x + linearModel.b;
+                    return {
+                        [selectedMetricX]: x,
+                        [selectedMetricY]: y
+                    };
+                });
+                setLinePoints(updatedLinePoints);
             }
-
-            setCorrelationComment(correlationComment);
-
-            const linearModel = ss.linearRegression(numericCommonData.map(entry => [entry[selectedMetricX], entry[selectedMetricY]]));
-            console.log(linearModel);
-            setLinearModel(linearModel);
-
-            const xLineValues = commonData.map(entry => entry[selectedMetricX]);
-            const updatedLinePoints = xLineValues.map(x => {
-                const y = linearModel.m * x + linearModel.b;
-                return {
-                    [selectedMetricX]: x,
-                    [selectedMetricY]: y
-                };
-            });
-            setLinePoints(updatedLinePoints);
 
 
         } catch (error) {
@@ -296,7 +298,7 @@ function Corelation() {
                         </div>
                     )}
                     {console.log(linePoints)}
-                    <ComposedChart width={600} height={400} style={{ margin: 'auto' }}>
+                    {commonData.length>0 && <ComposedChart width={600} height={400} style={{ margin: 'auto' }}>
                         <CartesianGrid />
                         <XAxis
                             type="number"
@@ -329,7 +331,7 @@ function Corelation() {
                             data={linePoints}
                             stroke="#ff7300"
                         />
-                    </ComposedChart>
+                    </ComposedChart>}
 
                 </div>
             )}
