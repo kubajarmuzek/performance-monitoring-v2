@@ -4,7 +4,7 @@ import { ref, get } from "firebase/database";
 import { auth, getCurrentUserUID, database } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../Sidebar';
-import { LineChart, Line, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart } from 'recharts';
+import { LineChart, Line, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, ResponsiveContainer } from 'recharts';
 import * as ss from 'simple-statistics'; // Import simple-statistics library
 import './corelation.css';
 
@@ -27,6 +27,9 @@ function Corelation() {
         marginLeft: 0,
     });
     const [linePoints, setLinePoints] = useState([]);
+    var minYValueCombined = Number.MAX_VALUE;
+    var maxYValueCombined = Number.MIN_VALUE;
+    var selectedMetricsData=[];
 
     useEffect(() => {
         fetchDataFromFirebase();
@@ -88,23 +91,36 @@ function Corelation() {
 
     const handleSubmit = async () => {
         try {
-            const selectedMetricsData = metricsData.filter(metric => metric.label === selectedMetricX || metric.label === selectedMetricY);
+            selectedMetricsData = metricsData.filter(metric => metric.label === selectedMetricX || metric.label === selectedMetricY);
 
-            // Sort the data based on dates
             const sortedData = selectedMetricsData.sort((a, b) => {
                 const dateA = a.date.split('/').reverse().join('-');
                 const dateB = b.date.split('/').reverse().join('-');
                 return new Date(dateA) - new Date(dateB);
             });
 
+            selectedMetricsData.forEach(metric => {
+                if(metric[selectedMetricX]>maxYValueCombined) {
+                    maxYValueCombined=metric[selectedMetricX]
+                }
+                if(metric[selectedMetricY]>maxYValueCombined) {
+                    maxYValueCombined=metric[selectedMetricY]
+                }
+                if(metric[selectedMetricX]<minYValueCombined) {
+                    minYValueCombined=metric[selectedMetricX]
+                }
+                if(metric[selectedMetricY]<minYValueCombined) {
+                    minYValueCombined=metric[selectedMetricY]
+                }
+            })
+            
             setShowChart(true);
             setResults(sortedData);
 
-            // Find common dates between selected metrics
             const commonDates = findCommonDates(sortedData);
             const commonEntries = aggregateCommonData(sortedData, commonDates);
 
-            if (commonDates.length>0) {
+            if (commonDates.length > 0) {
                 const numericCommonData = commonEntries.map(entry => ({
                     date: entry.date,
                     [selectedMetricX]: parseFloat(entry[selectedMetricX]),
@@ -193,7 +209,6 @@ function Corelation() {
 
     const processedData = preprocessData(results);
 
-    // Calculate the minimum and maximum values for X and Y axes
     const minXValue = Math.min(...commonData.map(entry => entry[selectedMetricX]));
     const maxXValue = Math.max(...commonData.map(entry => entry[selectedMetricX]));
     const minYValue = Math.min(...commonData.map(entry => entry[selectedMetricY]));
@@ -203,6 +218,39 @@ function Corelation() {
     const deltaY = (maxYValue - minYValue) * 0.2; // 10% increase
     const initialXDomain = [minXValue - deltaX, maxXValue + deltaX];
     const initialYDomain = [minYValue - deltaY, maxYValue + deltaY];
+
+    // Calculate the minimum and maximum values for both selected metrics, excluding NaN values
+const cMinXValue = Math.min(
+    ...processedData
+      .filter(entry => !isNaN(entry[selectedMetricX])) // Filter out entries with NaN values for selectedMetricX
+      .map(entry => entry[selectedMetricX])
+  );
+  
+  const cMaxXValue = Math.max(
+    ...processedData
+      .filter(entry => !isNaN(entry[selectedMetricX])) // Filter out entries with NaN values for selectedMetricX
+      .map(entry => entry[selectedMetricX])
+  );
+  
+  const cMinYValue = Math.min(
+    ...processedData
+      .filter(entry => !isNaN(entry[selectedMetricY])) // Filter out entries with NaN values for selectedMetricY
+      .map(entry => entry[selectedMetricY])
+  );
+  
+  const cMaxYValue = Math.max(
+    ...processedData
+      .filter(entry => !isNaN(entry[selectedMetricY])) // Filter out entries with NaN values for selectedMetricY
+      .map(entry => entry[selectedMetricY])
+  );
+  
+
+    const cDeltaX = (cMaxXValue - cMinXValue) * 0.4; // 10% increase
+    const cDeltaY = (cMaxYValue - cMinYValue) * 0.4; // 10% increase
+    const cInitialXDomain = [cMinXValue - cDeltaX, cMaxXValue + cDeltaX];
+    const cInitialYDomain = [cMinYValue - cDeltaY, cMaxYValue + cDeltaY];
+
+    console.log(cInitialXDomain,cInitialYDomain)
 
     return (
         <div className="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
@@ -217,6 +265,8 @@ function Corelation() {
             {showSidebar && <Sidebar handleClick={handleClick} className="menu--sideNav" />}
 
             <div className="container">
+                <h1>Correlation of two metrics</h1>
+                <p>Select two metrics of which correlation you want to see</p>
                 <div className="left-column">
                     <div className="input-field">
                         <label>1st value:</label>
@@ -253,17 +303,71 @@ function Corelation() {
             </div>
 
             {showChart && (
-                <div className="chart--corelation">
-                    <LineChart width={600} height={400} data={processedData} style={{ margin: 'auto' }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" type="category" />
-                        <YAxis yAxisId="left" />
-                        <YAxis yAxisId="right" orientation='right' />
-                        <Tooltip />
-                        <Legend />
-                        <Line type="monotone" dataKey={selectedMetricX} stroke="#8884d8" activeDot={{ r: 8 }} yAxisId="left" />
-                        <Line type="monotone" dataKey={selectedMetricY} stroke="#82ca9d" activeDot={{ r: 8 }} yAxisId="right" />
-                    </LineChart>
+                <div className="chart--correlation">
+                    <ResponsiveContainer className="chart--container" width="80%" height={400}>
+                        <LineChart width={600} height={400} data={processedData} style={{ margin: 'auto' }}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="date" type="category" />
+                            <YAxis yAxisId="left" domain={cInitialXDomain}/>
+                            <YAxis yAxisId="right" orientation='right' domain={cInitialYDomain}/>
+                            <Tooltip />
+                            <Legend />
+                            <Line type="monotone" dataKey={selectedMetricX} stroke="#8884d8" activeDot={{ r: 8 }} yAxisId="left" />
+                            <Line type="monotone" dataKey={selectedMetricY} stroke="#82ca9d" activeDot={{ r: 8 }} yAxisId="right" />
+                        </LineChart>
+                    </ResponsiveContainer>
+
+                    {correlation !== null && linearModel !== null && (
+                        <div className="statistics">
+                            <h3>Statistics</h3>
+                            <p>Correlation Coefficient: <span className="result">{correlation.toFixed(2)}</span></p>
+                            <p><span className="result">{correlationComment}</span></p>
+                            <p>Linear Regression Model: <span className="result"> Y = {linearModel.m.toFixed(2)}X + {linearModel.b.toFixed(2)}</span></p>
+                        </div>
+                    )}
+
+                    {commonData.length > 0 &&
+
+                        <div className="chart--correlation">
+                            <ResponsiveContainer className="chart--container" width="80%" height={400}>
+                                <ComposedChart width={600} height={400} style={{ margin: 'auto' }}>
+                                    <CartesianGrid />
+                                    <XAxis
+                                        type="number"
+                                        dataKey={selectedMetricX}
+                                        name={selectedMetricX}
+                                        domain={initialXDomain}
+                                        label={{
+                                            value: selectedMetricX,
+                                            position: 'insideBottom',
+                                            dy: 10 // Adjust this value to move the label away from the chart
+                                        }}
+                                    />
+                                    <YAxis
+                                        type="number"
+                                        dataKey={selectedMetricY}
+                                        name={selectedMetricY}
+                                        domain={initialYDomain}
+                                        label={{
+                                            value: selectedMetricY,
+                                            position: 'insideLeft',
+                                            angle: -90,
+                                            dx: 0, // Adjust this value to move the label away from the chart
+                                        }}
+                                    />
+                                    <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                                    <Scatter name="Common Data" data={commonData} fill="#8884d8" />
+                                    <Line
+                                        type="monotone"
+                                        dataKey={selectedMetricY}
+                                        data={linePoints}
+                                        stroke="#ff7300"
+                                    />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                    }
+
 
                     {commonData.length > 0 && (
                         <div className="common-data-table">
@@ -288,51 +392,6 @@ function Corelation() {
                             </table>
                         </div>
                     )}
-
-                    {correlation !== null && linearModel !== null && (
-                        <div className="statistics">
-                            <h3>Statistics</h3>
-                            <p>Correlation Coefficient: {correlation.toFixed(2)}</p>
-                            <p>{correlationComment}</p>
-                            <p>Linear Regression Model: Y = {linearModel.m.toFixed(2)}X + {linearModel.b.toFixed(2)}</p>
-                        </div>
-                    )}
-                    {console.log(linePoints)}
-                    {commonData.length>0 && <ComposedChart width={600} height={400} style={{ margin: 'auto' }}>
-                        <CartesianGrid />
-                        <XAxis
-                            type="number"
-                            dataKey={selectedMetricX}
-                            name={selectedMetricX}
-                            domain={initialXDomain}
-                            label={{
-                                value: selectedMetricX,
-                                position: 'insideBottom',
-                                dy: 10 // Adjust this value to move the label away from the chart
-                            }}
-                        />
-                        <YAxis
-                            type="number"
-                            dataKey={selectedMetricY}
-                            name={selectedMetricY}
-                            domain={initialYDomain}
-                            label={{
-                                value: selectedMetricY,
-                                position: 'insideLeft',
-                                angle: -90,
-                                dx: 0, // Adjust this value to move the label away from the chart
-                            }}
-                        />
-                        <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                        <Scatter name="Common Data" data={commonData} fill="#8884d8" />
-                        <Line
-                            type="monotone"
-                            dataKey={selectedMetricY}
-                            data={linePoints}
-                            stroke="#ff7300"
-                        />
-                    </ComposedChart>}
-
                 </div>
             )}
 

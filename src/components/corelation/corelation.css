@@ -1,3 +1,11 @@
+.container {
+    text-align: center;
+}
+
+h1,h2,h3,h4,h5 {
+    text-align: center;
+}
+
 .input-field {
     margin-bottom: 20px;
     width: 100%;
@@ -27,6 +35,42 @@
     width: 100%;
     max-width: 1000px;
     margin: 20px auto;
+}
+
+.statistics {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.statistics h3 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.statistics p {
+    margin-bottom: 5px;
+    font-size: 1rem;
+    color: #555;
+}
+
+.statistics .result {
+    font-weight: bold;
+    color: rgb(117, 79, 117); /* Blue color */
+}
+
+.chart--container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.chart--correlation {
+    margin-top: 50px;
 }
 
 @media screen and (min-width: 768px) {
