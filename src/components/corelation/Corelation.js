@@ -5,7 +5,7 @@ import { auth, getCurrentUserUID, database } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../Sidebar';
 import { LineChart, Line, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, ResponsiveContainer } from 'recharts';
-import * as ss from 'simple-statistics'; // Import simple-statistics library
+import * as ss from 'simple-statistics';
 import './corelation.css';
 
 function Corelation() {
@@ -13,6 +13,8 @@ function Corelation() {
     const [showSidebar, setShowSidebar] = useState(false);
     const [selectedMetricX, setSelectedMetricX] = useState('');
     const [selectedMetricY, setSelectedMetricY] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [showChart, setShowChart] = useState(false);
     const [metricsData, setMetricsData] = useState([]);
     const [results, setResults] = useState([]);
@@ -29,7 +31,7 @@ function Corelation() {
     const [linePoints, setLinePoints] = useState([]);
     var minYValueCombined = Number.MAX_VALUE;
     var maxYValueCombined = Number.MIN_VALUE;
-    var selectedMetricsData=[];
+    var selectedMetricsData = [];
 
     useEffect(() => {
         fetchDataFromFirebase();
@@ -93,27 +95,34 @@ function Corelation() {
         try {
             selectedMetricsData = metricsData.filter(metric => metric.label === selectedMetricX || metric.label === selectedMetricY);
 
-            const sortedData = selectedMetricsData.sort((a, b) => {
+            const filteredData = selectedMetricsData.filter(entry => {
+                const entryDate = new Date(entry.date.split('/').reverse().join('-'));
+                const startDateObj = new Date(startDate);
+                const endDateObj = new Date(endDate);
+                return entryDate >= startDateObj && entryDate <= endDateObj;
+            });
+
+            const sortedData = filteredData.sort((a, b) => {
                 const dateA = a.date.split('/').reverse().join('-');
                 const dateB = b.date.split('/').reverse().join('-');
                 return new Date(dateA) - new Date(dateB);
             });
 
             selectedMetricsData.forEach(metric => {
-                if(metric[selectedMetricX]>maxYValueCombined) {
-                    maxYValueCombined=metric[selectedMetricX]
+                if (metric[selectedMetricX] > maxYValueCombined) {
+                    maxYValueCombined = metric[selectedMetricX]
                 }
-                if(metric[selectedMetricY]>maxYValueCombined) {
-                    maxYValueCombined=metric[selectedMetricY]
+                if (metric[selectedMetricY] > maxYValueCombined) {
+                    maxYValueCombined = metric[selectedMetricY]
                 }
-                if(metric[selectedMetricX]<minYValueCombined) {
-                    minYValueCombined=metric[selectedMetricX]
+                if (metric[selectedMetricX] < minYValueCombined) {
+                    minYValueCombined = metric[selectedMetricX]
                 }
-                if(metric[selectedMetricY]<minYValueCombined) {
-                    minYValueCombined=metric[selectedMetricY]
+                if (metric[selectedMetricY] < minYValueCombined) {
+                    minYValueCombined = metric[selectedMetricY]
                 }
             })
-            
+
             setShowChart(true);
             setResults(sortedData);
 
@@ -150,7 +159,6 @@ function Corelation() {
                 setCorrelationComment(correlationComment);
 
                 const linearModel = ss.linearRegression(numericCommonData.map(entry => [entry[selectedMetricX], entry[selectedMetricY]]));
-                console.log(linearModel);
                 setLinearModel(linearModel);
 
                 const xLineValues = commonData.map(entry => entry[selectedMetricX]);
@@ -207,6 +215,14 @@ function Corelation() {
         return Object.values(commonEntries);
     };
 
+    const handleStartDateChange = (event) => {
+        setStartDate(event.target.value);
+    }
+
+    const handleEndDateChange = (event) => {
+        setEndDate(event.target.value);
+    }
+
     const processedData = preprocessData(results);
 
     const minXValue = Math.min(...commonData.map(entry => entry[selectedMetricX]));
@@ -220,37 +236,36 @@ function Corelation() {
     const initialYDomain = [minYValue - deltaY, maxYValue + deltaY];
 
     // Calculate the minimum and maximum values for both selected metrics, excluding NaN values
-const cMinXValue = Math.min(
-    ...processedData
-      .filter(entry => !isNaN(entry[selectedMetricX])) // Filter out entries with NaN values for selectedMetricX
-      .map(entry => entry[selectedMetricX])
-  );
-  
-  const cMaxXValue = Math.max(
-    ...processedData
-      .filter(entry => !isNaN(entry[selectedMetricX])) // Filter out entries with NaN values for selectedMetricX
-      .map(entry => entry[selectedMetricX])
-  );
-  
-  const cMinYValue = Math.min(
-    ...processedData
-      .filter(entry => !isNaN(entry[selectedMetricY])) // Filter out entries with NaN values for selectedMetricY
-      .map(entry => entry[selectedMetricY])
-  );
-  
-  const cMaxYValue = Math.max(
-    ...processedData
-      .filter(entry => !isNaN(entry[selectedMetricY])) // Filter out entries with NaN values for selectedMetricY
-      .map(entry => entry[selectedMetricY])
-  );
-  
+    const cMinXValue = Math.min(
+        ...processedData
+            .filter(entry => !isNaN(entry[selectedMetricX])) // Filter out entries with NaN values for selectedMetricX
+            .map(entry => entry[selectedMetricX])
+    );
+
+    const cMaxXValue = Math.max(
+        ...processedData
+            .filter(entry => !isNaN(entry[selectedMetricX])) // Filter out entries with NaN values for selectedMetricX
+            .map(entry => entry[selectedMetricX])
+    );
+
+    const cMinYValue = Math.min(
+        ...processedData
+            .filter(entry => !isNaN(entry[selectedMetricY])) // Filter out entries with NaN values for selectedMetricY
+            .map(entry => entry[selectedMetricY])
+    );
+
+    const cMaxYValue = Math.max(
+        ...processedData
+            .filter(entry => !isNaN(entry[selectedMetricY])) // Filter out entries with NaN values for selectedMetricY
+            .map(entry => entry[selectedMetricY])
+    );
+
 
     const cDeltaX = (cMaxXValue - cMinXValue) * 0.4; // 10% increase
     const cDeltaY = (cMaxYValue - cMinYValue) * 0.4; // 10% increase
     const cInitialXDomain = [cMinXValue - cDeltaX, cMaxXValue + cDeltaX];
     const cInitialYDomain = [cMinYValue - cDeltaY, cMaxYValue + cDeltaY];
 
-    console.log(cInitialXDomain,cInitialYDomain)
 
     return (
         <div className="home--body" style={showSidebar ? hoverStyles : defaultStyle}>
@@ -265,42 +280,65 @@ const cMinXValue = Math.min(
             {showSidebar && <Sidebar handleClick={handleClick} className="menu--sideNav" />}
 
             <div className="container">
-                <h1>Correlation of two metrics</h1>
-                <p>Select two metrics of which correlation you want to see</p>
-                <div className="left-column">
-                    <div className="input-field">
-                        <label>1st value:</label>
-                        <select value={selectedMetricX} onChange={handleMetricXSelect}>
-                            <option value="">Select</option>
-                            {metricsData
-                                .filter((metric, index, self) =>
-                                    index === self.findIndex((m) => m.label === metric.label)
-                                )
-                                .map((metric, index) => (
-                                    <option key={index} value={metric.label}>{metric.label}</option>
-                                ))}
-                        </select>
-                    </div>
-                </div>
-                <div className="middle-column">
-                    <div className="input-field">
-                        <label>2nd value:</label>
-                        <select value={selectedMetricY} onChange={handleMetricYSelect}>
-                            <option value="">Select</option>
-                            {metricsData
-                                .filter((metric, index, self) =>
-                                    index === self.findIndex((m) => m.label === metric.label)
-                                )
-                                .map((metric, index) => (
-                                    <option key={index} value={metric.label}>{metric.label}</option>
-                                ))}
-                        </select>
-                    </div>
-                </div>
-                <div className="right-column">
-                    <button onClick={handleSubmit}>Submit</button>
-                </div>
+    <h1>Correlation of two metrics</h1>
+    <p>Select two metrics of which correlation you want to see</p>
+
+    <div className="inputs">
+        <div className="input-row">
+            <div className="input-field">
+                <label>1st value:</label>
+                <select value={selectedMetricX} onChange={handleMetricXSelect}>
+                    <option value="">Select</option>
+                    {metricsData
+                        .filter((metric, index, self) =>
+                            index === self.findIndex((m) => m.label === metric.label)
+                        )
+                        .map((metric, index) => (
+                            <option key={index} value={metric.label}>{metric.label}</option>
+                        ))}
+                </select>
             </div>
+            <div className="input-field">
+                <label>2nd value:</label>
+                <select value={selectedMetricY} onChange={handleMetricYSelect}>
+                    <option value="">Select</option>
+                    {metricsData
+                        .filter((metric, index, self) =>
+                            index === self.findIndex((m) => m.label === metric.label)
+                        )
+                        .map((metric, index) => (
+                            <option key={index} value={metric.label}>{metric.label}</option>
+                        ))}
+                </select>
+            </div>
+        </div>
+        <div className="input-row">
+            <div className="date-filter">
+                <label className="date-label">Start Date:</label>
+                <input
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                    className="date-input"
+                />
+
+                <label className="date-label">End Date:</label>
+                <input
+                    type="date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                    className="date-input"
+                />
+            </div>
+        </div>
+        <div className="input-row">
+            <div className="right-column">
+                <button onClick={handleSubmit}>Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             {showChart && (
                 <div className="chart--correlation">
@@ -308,8 +346,8 @@ const cMinXValue = Math.min(
                         <LineChart width={600} height={400} data={processedData} style={{ margin: 'auto' }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="date" type="category" />
-                            <YAxis yAxisId="left" domain={cInitialXDomain}/>
-                            <YAxis yAxisId="right" orientation='right' domain={cInitialYDomain}/>
+                            <YAxis yAxisId="left" domain={cInitialXDomain} />
+                            <YAxis yAxisId="right" orientation='right' domain={cInitialYDomain} />
                             <Tooltip />
                             <Legend />
                             <Line type="monotone" dataKey={selectedMetricX} stroke="#8884d8" activeDot={{ r: 8 }} yAxisId="left" />

@@ -1,4 +1,5 @@
 .container {
+    width: 70%;
     text-align: center;
 }
 
@@ -24,7 +25,9 @@ h1,h2,h3,h4,h5 {
 }
 
 .right-column button {
-    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    padding: 10px;
     border: none;
     background-color: white;
     color: black;
@@ -72,6 +75,47 @@ h1,h2,h3,h4,h5 {
 .chart--correlation {
     margin-top: 50px;
 }
+
+.container {
+    text-align: center;
+}
+
+h1, h2, h3, h4, h5 {
+    text-align: center;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.input-field {
+    margin-right: 20px;
+}
+
+.input-field label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-field select, .date-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+.chart--correlation {
+    margin-top: 50px;
+}
+
 
 @media screen and (min-width: 768px) {
     .input-field {
