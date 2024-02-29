@@ -17,10 +17,10 @@ function App() {
         <section>                              
             <Routes>                                                                        
                 <Route path="/" element={<Home/>}/>
-                <Route path="/auth" element={<Auth/>}/>
-                <Route path="/charts" element={<Charts/>}/>
-                <Route path="/questionary" element={<Questionary/>}></Route>
-                <Route path="/corelation" element={<Corelation/>}></Route>
+                <Route path="auth" element={<Auth/>}/>
+                <Route path="charts" element={<Charts/>}/>
+                <Route path="questionary" element={<Questionary/>}></Route>
+                <Route path="corelation" element={<Corelation/>}></Route>
             </Routes>                    
         </section>
       </div>
