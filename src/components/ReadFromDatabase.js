@@ -7,6 +7,7 @@ function ReadDataFromDatabase() {
   const [data, setData] = useState([]);
   const [paramNames, setParamNames] = useState([]);
   const [error, setError] = useState(null);
+  const [chartsPerRow, setChartsPerRow] = useState(3); // Default value for charts per row
   const userUID = getCurrentUserUID();
 
   useEffect(() => {
@@ -14,7 +15,6 @@ function ReadDataFromDatabase() {
       try {
         if (userUID) {
           const databaseRef = ref(database, `users/${userUID}`);
-
           const snapshot = await get(databaseRef);
 
           if (snapshot.exists()) {
@@ -51,8 +51,6 @@ function ReadDataFromDatabase() {
     };
 
     fetchData();
-    console.log(data);
-
   }, [userUID]);
 
   // Helper function to strip units from values
@@ -66,12 +64,21 @@ function ReadDataFromDatabase() {
 
   return (
     <div>
-      <h2>Read Data from Firebase</h2>
       {error && <p>Error: {error}</p>}
 
       {paramNames.length > 0 && (
         <div>
-          <h3>Charts</h3>
+          <label htmlFor="chartsPerRow">Charts Per Row: </label>
+          <select
+            id="chartsPerRow"
+            value={chartsPerRow}
+            onChange={(e) => setChartsPerRow(parseInt(e.target.value))}
+          >
+            {[1, 2, 3, 4, 5].map((num) => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
+
           <div className='chart--grid'>
             {paramNames
               .filter(
@@ -80,13 +87,14 @@ function ReadDataFromDatabase() {
                   !data[paramName].every((item) => parseFloat(stripUnits(item[paramName])) === 0) // Exclude metrics with only zeros as values
               )
               .map((paramName, index) => (
-                <div key={index}>
+                <div key={index} style={{ flexBasis: `${100 / chartsPerRow}%` }}>
                   <h4>{paramName}</h4>
                   <ChartComponent
-                    data={data[paramName].map((item) => ({
-                      name: item.day,
-                      value: parseFloat(stripUnits(item[paramName])),
-                    }))
+                    data={data[paramName]
+                      .map((item) => ({
+                        name: item.day,
+                        value: parseFloat(stripUnits(item[paramName])),
+                      }))
                       .filter((item) => item.value !== 0)} // Filter out 0 values
                   />
                 </div>

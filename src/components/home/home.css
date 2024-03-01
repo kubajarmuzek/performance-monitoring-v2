@@ -16,18 +16,6 @@
     padding: 10px;
 }
 
-.chart--grid {
-    margin: 50px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-    gap: 20px;
-}
-
-.charts--table {
-    font-size: small;
-    padding: 5px;
-}
-
 .charts--table--cell th {
     margin: 2px;
     padding: 2px;

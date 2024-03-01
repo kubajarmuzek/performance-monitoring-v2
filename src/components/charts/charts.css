@@ -1,0 +1,16 @@
+body {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+}
+
+.chart--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc(100% / 3), 1fr));  
+}
+
+  @media screen and (max-width: 768px) {
+    .chart--grid {
+      grid-template-columns: repeat(auto-fill, minmax(calc(100% / 2), 1fr));
+    }
+  }
+  
