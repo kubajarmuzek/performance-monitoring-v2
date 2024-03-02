@@ -16,6 +16,8 @@ const Charts = () => {
     const [error, setError] = useState(null);
     const [chartsPerRow, setChartsPerRow] = useState(3);
     const [containerWidth, setContainerWidth] = useState(0);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const userUID = getCurrentUserUID();
 
     const hoverStyles = {
@@ -95,6 +97,14 @@ const Charts = () => {
         };
     }, [userUID]);
 
+    const handleStartDateChange = (event) => {
+        setStartDate(event.target.value);
+    };
+
+    const handleEndDateChange = (event) => {
+        setEndDate(event.target.value);
+    };
+
     const stripUnits = (value) => {
         if (typeof value === 'string') {
             return value.replace(/[^\d.-]/g, '');
@@ -129,7 +139,7 @@ const Charts = () => {
                     <div>
                         <label htmlFor="chartsPerRow">Charts Per Row: </label>
                         <select
-                            id="chartsPerRow"
+                            className="chartsPerRow"
                             value={chartsPerRow}
                             onChange={(e) => setChartsPerRow(parseInt(e.target.value))}
                         >
@@ -138,25 +148,55 @@ const Charts = () => {
                             ))}
                         </select>
 
+                        <div className="date-selection">
+                            <label htmlFor="startDate">Start Date:</label>
+                            <input
+                                type="date"
+                                id="startDate"
+                                value={startDate}
+                                onChange={handleStartDateChange}
+                                style={{ marginRight: '10px', padding: '5px', border: '1px solid #ccc', borderRadius: '5px', fontSize: '16px' }}
+                            />
+                            <label htmlFor="endDate">End Date:</label>
+                            <input
+                                type="date"
+                                id="endDate"
+                                value={endDate}
+                                onChange={handleEndDateChange}
+                                style={{ padding: '5px', border: '1px solid #ccc', borderRadius: '5px', fontSize: '16px' }}
+                            />
+                        </div>
+
                         <div className='chart--grid' style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(calc(100% / ${chartsPerRow + 1}), 1fr))`, gap: '20px' }}>
                             {paramNames
                                 .filter(
                                     (paramName) =>
                                         !isNaN(parseFloat(stripUnits(data[paramName][0][paramName]))) &&
-                                        !data[paramName].every((item) => parseFloat(stripUnits(item[paramName])) === 0)
+                                        !data[paramName].every((item) => parseFloat(stripUnits(item[paramName])) === 0) && paramName !== "Date" && paramName !== "date"
                                 )
+                                .filter(paramName => data[paramName].some(item => {
+                                    const dateObject = new Date(item.date.split('/').reverse().join('-'));
+                                    const startDateObj = new Date(startDate);
+                                    const endDateObj = new Date(endDate);
+                                    return dateObject >= startDateObj && dateObject <= endDateObj;
+                                }))
                                 .map((paramName, index) => (
-                                    <div className="chart" key={index} style={{ width: chartWidth, paddingLeft: `${20/chartsPerRow}%`, paddingRight: `${20/chartsPerRow}%`}}>
+                                    <div className="chart" key={index} style={{ width: chartWidth, paddingLeft: `${20 / chartsPerRow}%`, paddingRight: `${20 / chartsPerRow}%` }}>
                                         <h4>{paramName}</h4>
                                         <ChartComponent
-                                            data={data[paramName]
+                                            data={data[paramName].filter(item => {
+                                                const dateObject = new Date(item.date.split('/').reverse().join('-'));
+                                                const startDateObj = new Date(startDate);
+                                                const endDateObj = new Date(endDate)
+                                                return dateObject >= startDateObj && dateObject <= endDateObj;
+                                            })
                                                 .map((item) => ({
                                                     name: item.day,
                                                     value: parseFloat(stripUnits(item[paramName])),
                                                 }))
                                                 .filter((item) => item.value !== 0)}
-                                            width={chartWidth * (1-0.4/chartsPerRow)}
-                                            height={chartWidth * 0.75 *(1-0.4/chartsPerRow)}
+                                            width={chartWidth * (1 - 0.4 / chartsPerRow)}
+                                            height={chartWidth * 0.75 * (1 - 0.4 / chartsPerRow)}
                                             chartsPerRow={chartsPerRow}
                                         />
                                     </div>
