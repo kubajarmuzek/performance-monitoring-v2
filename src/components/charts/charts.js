@@ -47,28 +47,45 @@ const Charts = () => {
                 if (userUID) {
                     const databaseRef = ref(database, `users/${userUID}`);
                     const snapshot = await get(databaseRef);
-
+        
                     if (snapshot.exists()) {
                         const dataObject = snapshot.val();
                         const dataAsArray = Object.values(dataObject);
-
+        
                         const metricArrays = {};
-
+        
                         dataAsArray.forEach((item) => {
                             const metricName = item.label;
-
+        
                             if (!metricArrays[metricName]) {
                                 metricArrays[metricName] = [];
                             }
-
+        
                             metricArrays[metricName].push({
                                 ...item,
                                 day: item.date,
                             });
                         });
-
+        
                         setData(metricArrays);
                         setParamNames(Object.keys(metricArrays));
+        
+                        // Calculate minimum and maximum dates
+                        let minDate = new Date();
+                        let maxDate = new Date(0);
+        
+                        dataAsArray.forEach((item) => {
+                            const currentDate = new Date(item.date);
+                            if (currentDate < minDate) minDate = currentDate;
+                            if (currentDate > maxDate) maxDate = currentDate;
+                        });
+        
+                        // Format dates for input fields (YYYY-MM-DD)
+                        const minDateFormatted = minDate.toISOString().split('T')[0];
+                        const maxDateFormatted = maxDate.toISOString().split('T')[0];
+        
+                        setStartDate(minDateFormatted);
+                        setEndDate(maxDateFormatted);
                     } else {
                         setError("No data found in the database for the current user.");
                     }
@@ -79,23 +96,25 @@ const Charts = () => {
                 setError(error.message);
             }
         };
-
+        
+    
         fetchData();
-
+    
         const updateContainerWidth = () => {
             const container = document.getElementById('chart-container');
             if (container) {
                 setContainerWidth(container.offsetWidth);
             }
         };
-
+    
         window.addEventListener('resize', updateContainerWidth);
         updateContainerWidth();
-
+    
         return () => {
             window.removeEventListener('resize', updateContainerWidth);
         };
     }, [userUID]);
+    
 
     const handleStartDateChange = (event) => {
         setStartDate(event.target.value);
