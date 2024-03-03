@@ -70,7 +70,6 @@ const Charts = () => {
                         setData(metricArrays);
                         setParamNames(Object.keys(metricArrays));
         
-                        // Calculate minimum and maximum dates
                         let minDate = new Date();
                         let maxDate = new Date(0);
         
@@ -80,7 +79,6 @@ const Charts = () => {
                             if (currentDate > maxDate) maxDate = currentDate;
                         });
         
-                        // Format dates for input fields (YYYY-MM-DD)
                         const minDateFormatted = minDate.toISOString().split('T')[0];
                         const maxDateFormatted = maxDate.toISOString().split('T')[0];
         

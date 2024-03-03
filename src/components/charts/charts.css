@@ -48,3 +48,48 @@ button:hover {
 .menu--bars {
   cursor: pointer;
 }
+
+.chart-container {
+  position: relative;
+}
+
+.stats-popup {
+  position: absolute;
+  bottom: -100px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 80%;
+  max-width: 400px;
+  opacity: 0;
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+
+.chart-container:hover .chart-stats {
+  bottom: 20px;
+  opacity: 1;
+}
+
+.chart-stats h2 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.stat span {
+  font-weight: bold;
+}
+
+.stat .icon {
+  margin-right: 5px;
+  color: #888;
+}
